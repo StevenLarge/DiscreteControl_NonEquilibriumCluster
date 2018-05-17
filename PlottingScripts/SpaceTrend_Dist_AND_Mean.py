@@ -16,11 +16,16 @@ kR = 12
 beta = 1
 kTrap = 1.5
 
-def GeneratePlot(Path="/Users/stevelarge/Research/DiscreteControl/LinkedCode_CPP/NonEquilibrium_Local/WorkDistributions_April23/",Param="12_15",Tau = 2000,option=1):
+def GeneratePlot(Path="/Users/stevelarge/Research/DiscreteControl/LinkedCode_CPP/NonEquilibrium_Local/WorkDistributions_Space/",Param="15_15",Tau = 2000,option=1):
 
-	FilenameNaive_Base = "WorkDist_Master_" + Param + "_Naive_CP" 
-	FilenameSpaceOpt_Base = "WorkDist_Master_" + Param + "_SpaceOpt_CP"
-	FilenameFullOpt_Base = "WorkDist_Master_" + Param + "_FullOpt_CP"
+	#FilenameNaive_Base = "WorkDist_Master_" + Param + "_Naive_CP" 
+	#FilenameSpaceOpt_Base = "WorkDist_Master_" + Param + "_SpaceOpt_CP"
+	#FilenameFullOpt_Base = "WorkDist_Master_" + Param + "_FullOpt_CP"
+
+	FilenameNaive_Base = "MasterWorkDist_" + Param + "_Naive_CP"
+	FilenameSpaceOpt_Base = "MasterWorkDist_" + Param + "_SpaceOpt_CP"
+	FilenameFullOpt_Base = "MasterWorkDist_" + Param + "_FullOpt_CP"
+
 
 	CPRange = [4,8,16,32,64,128,256,512]
 	TimeRange = [800,1600,3200,6400,12800,25600,51200,102400]
@@ -65,6 +70,19 @@ def WorkAnalysis(WorkArray,CPRange):
 
 	return MeanWork,StdErr
 
+def WriteMeanWork(Filename,CPVals,Work,StdErr):
+
+	Path = "/Users/stevelarge/Research/DiscreteControl/LinkedCode_CPP/NonEquilibrium_Local/WorkAnalysisFiles/"
+
+	CompleteName = os.path.join(Path,Filename)
+
+	file1 = open(CompleteName,'w')
+
+	for index in range(len(CPVals)):
+		file1.write("%lf\t%lf\t%lf\n" % (CPVals[index],Work[index],StdErr[index]))
+
+	file1.close()
+
 
 def TwoHistoPlot(CPRange,TimeRange,Work1,Work2):
 
@@ -87,6 +105,9 @@ def TwoHistoPlot(CPRange,TimeRange,Work1,Work2):
 
 	MeanWork1,StdErr1 = WorkAnalysis(Work1,CPRange)
 	MeanWork2,StdErr2 = WorkAnalysis(Work2,CPRange)
+
+	WriteMeanWork("MeanWork_Naive.dat",CPRange,MeanWork1,StdErr1)
+	WriteMeanWork("MeanWork_SpaceOpt.dat",CPRange,MeanWork2,StdErr2)
 
 	axes[2].plot(CPRange,MeanWork1,'r--',linewidth=3.0,alpha=0.75)
 	axes[2].plot(CPRange,MeanWork2,'g--',linewidth=3.0,alpha=0.75)
